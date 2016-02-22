@@ -517,7 +517,7 @@ if ($pipeline == 0) {   # If not running in pipeline mode
   ## Create a summary file
   if ($out_sum == 1) {   # If summary output is on
     $now = localtime;   # Get the current time
-    open (SUMMARY, ">$output.summary.txt");   # Create the summary file
+    open (SUMMARY, ">$output.summary.txt") or die "Could not write $output.summary.txt";   # Create the summary file
     print SUMMARY "ITSx run started at $now.\n";   # Output the starting time for the analysis
     print SUMMARY "-----------------------------------------------------------------\n";
     close (SUMMARY);   # Close summary file
@@ -716,6 +716,9 @@ foreach $entry (@profileList) {   # Go through the entered types
 
 foreach $set (@profileSet) {   # For each set of profiles in the the full profile set for investigation
   $hmmPath = $profileDB . "/" . $set . ".hmm";   # Determine the path to the HMM-file
+  if (! -r $hmmPath) {
+    die "$hmmPath does not exist or is not readable, please set db directory using -p"
+  }
   chomp($modelCount = `grep -c "//" $hmmPath`);   # Count the number of models in the HMM-file
   push(@modelCount,$modelCount);   # Add the number of models in this HMM-file to the list of model counts
   if ($reset == 1) {
@@ -739,7 +742,7 @@ if ($out_sum == 1) {   # If summary output is on
 
 if ($input ne "") {   # If an input file is given
   ## Read from file
-  open (SEQUENCES, $input);   # Open the input file for reading
+  open (SEQUENCES, $input) or die "Could not read input sequence file $input";   # Open the input file for reading
   open (MAIN, ">$tempDir/main.fasta");   # Create a temporary file for storing the cleaned sequences representing the main strand
   open (COMPLEMENT, ">$tempDir/complement.fasta");   # Create a temporary file for storing the cleaned sequences representing the complementary strand
   $inputSequenceCount = 0;   # Reset input sequence counter
