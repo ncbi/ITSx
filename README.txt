@@ -1,4 +1,13 @@
+Lightly Modified Version of ITSx
+================================
+
+This is ITSx, with the addition of a little bit of error handling.
+
+The source code of this modified version is available at https://github.com/ncbi/ITSx
+
+
 ITSx -- Identifies ITS sequences and extracts the ITS region
+============================================================
 
 Source code available at:
 http://microbiology.se/software/itsx
