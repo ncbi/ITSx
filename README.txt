@@ -1,10 +1,10 @@
-Lightly Modified Version of ITSx
-================================
+MODIFIED Version of ITSx
+========================
 
-This is ITSx, with the addition of a little bit of error handling.
+NCBI is NOT the original author of ITSx, and in almost all cases, you should ignore this repository
+and go to http://microbiology.se/software/itsx
 
-The source code of this modified version is available at https://github.com/ncbi/ITSx
-
+This GitHub repository holds ITSx with the addition of a little bit of error handling.
 
 ITSx -- Identifies ITS sequences and extracts the ITS region
 ============================================================
