@@ -87,6 +87,7 @@ Output options:\
 --graph_scale {value} : Sets the scale of the graph output, if value is zero, a percentage view is shown, default = 0\
 --save_raw {T or F} : Saves all raw data for searches etc. instead of removing it on finish, off (F) by default\
 --temp {directory} : Custom directory to put the temporary files in\
+--seqtotal {int} : Max seqs to process.  Default 0 for unlimited\
 
 -h : displays this help message\
 --help : displays this help message\
@@ -152,6 +153,7 @@ $graph_scale = 0;
 $debug = 0;
 $reset = 0;
 $tempDir = ".";
+$seqtotal = 0; # Set the max number of sequences to file
 
 ## Read command-line options
 for ($i = 0; $i <= scalar(@ARGV); $i++) { # Goes through the list of arguments
@@ -458,6 +460,10 @@ for ($i = 0; $i <= scalar(@ARGV); $i++) { # Goes through the list of arguments
   if ($arg eq "--temp") {   # Custom temp directory
     $i++;
     $tempDir = @ARGV[$i];
+  }
+  if ($arg eq "--seqtotal") { # Max seqs to process.  0 for unlimited
+    $i++;
+    $seqtotal = @ARGV[$i];
   }
 
   ## If "-h" or "--help" are among the options, output usage data and options
@@ -840,7 +846,6 @@ close (MEMFILE);		# Close memory file
 if ($memtotal == 0) { # If the total memory could not be determined for some reason
   $memtotal = 1024 * 1024 * 1024; # Reserve 1GB of RAM, who does not have that??
 }
-$seqtotal = 10000; # Set the max number of sequences to file to 10000
 
 
 ## Clean-up input files and create complementary strand if needed
@@ -888,7 +893,7 @@ if ($input ne "") {		# If an input file is given
       ($sequenceID) = split(" ",substr($sequence,1));
       $header = $sequence;	# Save the sequence header
       $mainSeq = "";		# Empty the main sequence entry
-      if (($curseq >= $seqtotal) || ($curmem > $memtotal / $cpu)) { # If memory usage is approaching too high levels
+      if (($seqtotal > 0 && $curseq >= $seqtotal) || ($curmem > $memtotal / $cpu)) { # If memory usage is approaching too high levels
 	close (MAIN);
 	close (COMPLEMENT);
 	close (PAIRINFO);
@@ -966,7 +971,7 @@ if ($input ne "") {		# If an input file is given
       
       $curseq++; # Add one to the sequences per file tracker
       $curmem = $curmem + length($mainSeq) + length($sequenceID) + length($sequenceID) + length($header); # Add more data to the memory tracker
-      if (($curseq >= $seqtotal) || ($curmem > $memtotal / $cpu)) { # If memory usage is approaching too high levels
+      if (($seqtotal > 0 && $curseq >= $seqtotal) || ($curmem > $memtotal / $cpu)) { # If memory usage is approaching too high levels
 	close (MAIN);
 	close (COMPLEMENT);
 	close (PAIRINFO);
